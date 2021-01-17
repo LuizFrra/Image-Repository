@@ -1,0 +1,330 @@
+{
+	"info": {
+		"_postman_id": "7905f0bd-0907-44cc-aa06-96fb6aa1a699",
+		"name": "Image Repository",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "UserController",
+			"item": [
+				{
+					"name": "Crate User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"{userEmail}\",\r\n    \"password\": \"{userPassword}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/user",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"user"
+							]
+						},
+						"description": "Create a user from a email and password."
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"{userEmail}\",\r\n    \"password\": \"{userPassword}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/auth",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"auth"
+							]
+						},
+						"description": "This Endpoint allow user do login, the response is a JWT token that must be put on header."
+					},
+					"response": []
+				},
+				{
+					"name": "Get User By Id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "BEARER {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/user/{userId}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"{userId}"
+							]
+						},
+						"description": "Allow get info from a user using the user id."
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Images",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "BEARER {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/user/{userId}/images",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"{userId}",
+								"images"
+							]
+						},
+						"description": "Allow get All images from a user."
+					},
+					"response": []
+				},
+				{
+					"name": "me",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "BEARER {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/user/me",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"me"
+							]
+						},
+						"description": "Show informations about the logged user."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ImageController",
+			"item": [
+				{
+					"name": "Upload",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "BEARER {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "files",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/image/upload",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"image",
+								"upload"
+							]
+						},
+						"description": "Allow a user upload one or more images."
+					},
+					"response": []
+				},
+				{
+					"name": "Find By Query",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "BEARER {{token}}"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/image",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"image"
+							],
+							"query": [
+								{
+									"key": "query",
+									"value": "id>{imageId}",
+									"disabled": true
+								},
+								{
+									"key": "query",
+									"value": "originalName:{originalName}",
+									"disabled": true
+								},
+								{
+									"key": "query",
+									"value": "size>{size}",
+									"disabled": true
+								},
+								{
+									"key": "query",
+									"value": "remoteName:{remoteName}",
+									"disabled": true
+								},
+								{
+									"key": "query",
+									"value": "forSelling:{false}",
+									"disabled": true
+								}
+							]
+						},
+						"description": "This EndPoint allow a user search for a image using diferentes query options, like find by id, or remoteName, forSelling and others."
+					},
+					"response": []
+				},
+				{
+					"name": "Edit Image Properties",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "BEARER {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"id\": {imageId},\r\n        \"forSelling\": true,\r\n        \"value\": 100.10,\r\n        \"discount\": 10\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/image/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"image",
+								""
+							]
+						},
+						"description": "This EndPoint allow the owner of image change image properties like put the image for selling, discount ou value of image."
+					},
+					"response": []
+				},
+				{
+					"name": "Buy Image",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "BEARER {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/image/{imageId}/buy",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"image",
+								"{imageId}",
+								"buy"
+							]
+						},
+						"description": "This EndPoint allow the user buy a image from another user if the buyer has enought money."
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
