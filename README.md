@@ -36,7 +36,7 @@ The project will start running on port 8080,the default settings can be changed 
 
 # How To Use
 
-Export the file Image Repository.postman_collection.json to your postman application.
+Import the file Image Repository.postman_collection.json to your postman application.
 
 # 📁 Collection: UserController
 
