@@ -1,6 +1,8 @@
 package luiz.imageRepo.services.image;
 
 import lombok.AllArgsConstructor;
+import luiz.imageRepo.exceptions.ImageNotExistException;
+import luiz.imageRepo.exceptions.NotMeetRequisitesException;
 import luiz.imageRepo.entities.image.Image;
 import luiz.imageRepo.entities.user.User;
 import luiz.imageRepo.repositories.image.ImageRepository;
@@ -35,7 +37,11 @@ public class ImageDatabaseService {
                     userDb.ifPresent(image::setUser);
                     return imageRepository.save(image);
                 }
+            } else {
+                throw new NotMeetRequisitesException("You Haven't Permission To Edit this Image", image.getId());
             }
+        } else {
+            throw new ImageNotExistException("Image Not Exist", image.getId());
         }
 
         return null;
@@ -53,17 +59,23 @@ public class ImageDatabaseService {
             boolean buyerHaveEnoughMoney = buyer.subtractFromCash(image.getValueWithDiscount());
             boolean sellerIsNotBuyer = seller.getId() != buyerId;
 
-            if(buyerHaveEnoughMoney && sellerIsNotBuyer) {
-                seller.addToCash(image.getValueWithDiscount());
-                image.setUser(buyer);
-                image.setForSelling(false);
-                Image result = imageRepository.save(image);
-                userService.updateUser(buyer);
-                userService.updateUser(seller);
-                return result;
-            }
+            if(!sellerIsNotBuyer)
+                throw new NotMeetRequisitesException("You can't Buy An Image From yourself.", null);
+
+            if(!buyerHaveEnoughMoney)
+                throw new NotMeetRequisitesException("You Haven't Enough Money to Buy The Image", null);
+
+            seller.addToCash(image.getValueWithDiscount());
+            image.setUser(buyer);
+            image.setForSelling(false);
+            Image result = imageRepository.save(image);
+            userService.updateUser(buyer);
+            userService.updateUser(seller);
+            return result;
+
+        } else {
+            throw new ImageNotExistException("Imag Not Exist", imageId);
         }
-        return null;
     }
 
     public List<Image> findByOriginalName(String originalName) {
