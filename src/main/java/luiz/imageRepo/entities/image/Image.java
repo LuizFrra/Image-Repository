@@ -2,6 +2,7 @@ package luiz.imageRepo.entities.image;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import luiz.imageRepo.dtos.ImageDTO;
 import luiz.imageRepo.entities.user.User;
 
 import javax.persistence.*;
@@ -33,15 +34,18 @@ public class Image {
     @Column(columnDefinition = "Decimal(10,2) default 10")
     private double value = 10.0;
 
-    @Version
-    private Integer version;
+    @Column(columnDefinition = "Decimal(10,2) default 0")
+    private double discount = 0;
 
     @Column
     private boolean forSelling = false;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    public User user;
+    private User user;
+
+    @Version
+    private Integer version;
 
     public Image(String originalName, String remoteName, long size, ImageStatus status) {
         this.originalName = originalName;
@@ -50,4 +54,12 @@ public class Image {
         this.status = status;
     }
 
+    public double getValueWithDiscount() {
+        return value - (value * (discount/100));
+    }
+
+    @JsonIgnore
+    public ImageDTO toDTO() {
+        return new ImageDTO(id, value, discount, forSelling, originalName, size, user.getId(), null);
+    }
 }

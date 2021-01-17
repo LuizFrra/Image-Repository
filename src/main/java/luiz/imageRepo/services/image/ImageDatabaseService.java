@@ -6,10 +6,7 @@ import luiz.imageRepo.entities.user.User;
 import luiz.imageRepo.repositories.image.ImageRepository;
 import luiz.imageRepo.services.user.UserService;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,11 +50,11 @@ public class ImageDatabaseService {
             Image image = imageOp.get();
             User seller = image.getUser();
 
-            boolean buyerHaveEnoughMoney = buyer.subtractFromCash(image.getValue());
+            boolean buyerHaveEnoughMoney = buyer.subtractFromCash(image.getValueWithDiscount());
             boolean sellerIsNotBuyer = seller.getId() != buyerId;
 
             if(buyerHaveEnoughMoney && sellerIsNotBuyer) {
-                seller.addToCash(image.getValue());
+                seller.addToCash(image.getValueWithDiscount());
                 image.setUser(buyer);
                 image.setForSelling(false);
                 Image result = imageRepository.save(image);

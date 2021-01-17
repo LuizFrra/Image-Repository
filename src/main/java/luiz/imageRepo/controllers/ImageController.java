@@ -2,6 +2,7 @@ package luiz.imageRepo.controllers;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import luiz.imageRepo.dtos.ImageDTO;
 import luiz.imageRepo.entities.image.Image;
 import luiz.imageRepo.entities.image.ImageStatus;
 import luiz.imageRepo.entities.user.User;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -57,34 +59,46 @@ public class ImageController {
     }
 
     @PatchMapping
-    public ResponseEntity<Image> updateImage(@RequestBody Image image, Authentication authentication) {
+    public ResponseEntity<?> updateImage(@RequestBody ImageDTO imageDTO, Authentication authentication) {
 
-        Optional<Image> imageOp = imageDatabaseService.findById(image.getId());
+        if(!imageDTO.isValid())
+            return new ResponseEntity<>(imageDTO.getErrors(), HttpStatus.PRECONDITION_FAILED);
+
         long userId = Long.parseLong((String)authentication.getPrincipal());
-        image = imageDatabaseService.update(image, userId);
+        Optional<Image> imageOp = imageDatabaseService.findById(imageDTO.getId());
+
+        Image image = null;
+
+        if(imageOp.isPresent()) {
+            Image imageToUpdate = imageOp.get();
+            imageDTO.setImageProperties(imageToUpdate);
+            image = imageDatabaseService.update(imageToUpdate, userId);
+        }
 
         if(image == null)
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
-        return new ResponseEntity<>(image, HttpStatus.OK);
+        return new ResponseEntity<>(image.toDTO(), HttpStatus.OK);
     }
 
     @PostMapping("/{imageId}/buy")
-    public ResponseEntity<Image> buyImage(@PathVariable long imageId, Authentication authentication) {
+    public ResponseEntity<ImageDTO> buyImage(@PathVariable long imageId, Authentication authentication) {
         long buyerId = Long.parseLong((String)authentication.getPrincipal());
         Image image = imageDatabaseService.buyImage(buyerId, imageId);
 
         if(image != null)
-            return new ResponseEntity<>(image, HttpStatus.OK);
+            return new ResponseEntity<>(image.toDTO(), HttpStatus.OK);
 
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping
-    public ResponseEntity<List<Image>> findByFilter(@RequestParam(value = "query", required = false) String search) {
+    public ResponseEntity<List<ImageDTO>> findByFilter(@RequestParam(value = "query", required = false) String search) {
         ImageSpecificationBuilder builder = new ImageSpecificationBuilder();
         builder.with(search);
-        return new ResponseEntity<>(imageDatabaseService.findByFilter(builder.build()), HttpStatus.OK);
+        List<Image> images = imageDatabaseService.findByFilter(builder.build());
+        List<ImageDTO> imageDTOs = images.stream().map(Image::toDTO).collect(Collectors.toList());
+        return new ResponseEntity<>(imageDTOs, HttpStatus.OK);
     }
 
 }

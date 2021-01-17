@@ -6,6 +6,7 @@ import luiz.imageRepo.entities.user.User;
 import luiz.imageRepo.services.user.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -46,5 +47,11 @@ public class UserController {
             return new ResponseEntity<>(userOp.get().getImages(), HttpStatus.OK);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/me")
+    public User me(Authentication authentication) {
+        long userId = Long.parseLong((String)authentication.getPrincipal());
+        return userService.findUserById(userId).orElse(null);
     }
 }
