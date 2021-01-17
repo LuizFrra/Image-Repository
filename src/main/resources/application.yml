@@ -2,9 +2,17 @@ server:
   servlet:
     context-path: /api
 
+
+imageRepo.db.host: localhost:5431
+imageRepo.ftp.host: localhost
+imageRepo.ftp.port: 22021
+imageRepo.ftp.username: img
+imageRepo.ftp.password: img123
+imageRepo.ftp.dir: "/imageRepository"
+
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5431/imageRepository
+    url: jdbc:postgresql://${imageRepo.db.host}/imageRepository
     username: root
     password: root
 
@@ -20,12 +28,12 @@ spring:
       max-request-size: 5GB
 
 sftp:
-  host: localhost
-  port: 22021
-  username: img
-  password: img123
+  host: ${imageRepo.ftp.host}
+  port: ${imageRepo.ftp.port}
+  username: ${imageRepo.ftp.username}
+  password: ${imageRepo.ftp.password}
   directory:
-    remote: "/imageRepository"
+    remote: ${imageRepo.ftp.dir}
   active: true
 
 security:

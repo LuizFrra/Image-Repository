@@ -6,6 +6,23 @@ volumes:
 
 services:
 
+  imageRepo:
+    build: ./
+    image: srpoe/image-repo
+    restart: always
+    environment:
+      imageRepo.db.host: "postgres-imageRepository-db:5432"
+      imageRepo.ftp.host: "sftp-imageRepository"
+      imageRepo.ftp.port: "22"
+      imageRepo.ftp.username: "img"
+      imageRepo.ftp.password: "img123"
+      imageRepo.ftp.dir: "/imageRepository"
+    ports:
+      - 8080:8080
+    depends_on:
+      - postgres-imageRepository-db
+      - sftp-imageRepository
+
   postgres-imageRepository-db:
     image: postgres:13.1-alpine
     volumes:
