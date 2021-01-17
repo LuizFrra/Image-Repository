@@ -48,7 +48,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     JWTAuthenticationFilter authenticationFilter() throws Exception {
         JWTAuthenticationFilter JWTAuthenticationFilter = new JWTAuthenticationFilter();
         JWTAuthenticationFilter.setAuthenticationManager(authenticationManager());
-        JWTAuthenticationFilter.setFilterProcessesUrl("/api/auth");
+        JWTAuthenticationFilter.setFilterProcessesUrl("/auth");
         JWTAuthenticationFilter.setPostOnly(true);
         JWTAuthenticationFilter.setAuthenticationFailureHandler(new JWTAuthenticationFailureHandler());
         return JWTAuthenticationFilter;
