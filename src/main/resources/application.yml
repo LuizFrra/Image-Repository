@@ -1,0 +1,32 @@
+server:
+  servlet:
+    context-path: /api
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5431/imageRepository
+    username: root
+    password: root
+
+  jpa:
+    show-sql: true
+    generate-ddl: true
+    hibernate:
+      ddl-auto: update
+
+  servlet:
+    multipart:
+      max-file-size: 5GB
+      max-request-size: 5GB
+
+sftp:
+  host: localhost
+  port: 22021
+  username: img
+  password: img123
+  directory:
+    remote: "/imageRepository"
+  active: true
+
+security:
+  symetricKey: "bla"
